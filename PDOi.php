@@ -14,7 +14,7 @@ class PDOi extends PDO {
     $stmt = new PDOiStatement();
 
     // Parse out the named parameters if there are any and store their positions and orders
-    if(preg_match_all('/:[a-z_]+/', $sql, $matches)) {
+    if(preg_match_all('/:[a-zA-Z0-9_]+/', $sql, $matches)) {
       # echo "Found parameters\n";
       # print_r($matches);
       foreach($matches[0] as $i=>$m) {
@@ -23,7 +23,7 @@ class PDOi extends PDO {
     }
     
     // Convert all named parameters to question marks
-    $sql = preg_replace('/:[a-z_]+/', '?', $sql);
+    $sql = preg_replace('/:[a-zA-Z0-9_]+/', '?', $sql);
     
     # echo 'New SQL: ' . $sql."\n";
     $PDOstmt = parent::prepare($sql);
@@ -63,7 +63,7 @@ class PDOiStatement {
 
   public function bindParam($parameter, &$variable, $data_type=PDO::PARAM_STR, $length=FALSE, $driver_options=FALSE) {
     $parameters = FALSE;
-    if(preg_match('/:[a-z_]+/', $parameter))
+    if(preg_match('/:[a-zA-Z0-9_]+/', $parameter))
       $parameters = $this->_name_to_position($parameter);
 
     if(is_array($parameters)) {
@@ -78,12 +78,12 @@ class PDOiStatement {
   
   public function bindValue($parameter, $value, $data_type=PDO::PARAM_STR) {
     $parameters = FALSE;
-    if(preg_match('/:[a-z_]+/', $parameter))
+    if(preg_match('/:[a-zA-Z0-9_]+/i', $parameter))
       $parameters = $this->_name_to_position($parameter);
 
     if(is_array($parameters)) {
       foreach($parameters as $p) {
-        echo "Binding '$value' to $p\n";
+        #echo "Binding '$value' to $p\n";
         $this->_stmt->bindValue($p, $value, $data_type);
       }
     } else {
