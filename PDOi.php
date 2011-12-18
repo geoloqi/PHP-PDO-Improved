@@ -20,6 +20,8 @@ class PDOi extends PDO {
       foreach($matches[0] as $i=>$m) {
         $stmt->map($m, $i+1);
       }
+    } else {
+      return parent::prepare($sql);
     }
     
     // Convert all named parameters to question marks
